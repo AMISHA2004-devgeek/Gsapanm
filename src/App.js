@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AnimatedImage from "./components/AnimatedImage";
-import Home from "./pages/Home"; // Adjust this based on your project structure
+import AboutUs from "./pages/AboutUs";
 
 const App = () => (
   <Router>
     <Routes>
       <Route path="/" element={<AnimatedImage />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/about-us" element={<AboutUs />} />
     </Routes>
   </Router>
 );

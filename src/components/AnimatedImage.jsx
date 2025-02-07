@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { useNavigate } from "react-router-dom"; 
 import image from "../imgs/gfgscLogo.png";
+import Home from "../pages/Home";
 
 const AnimatedImage = () => {
   const imgRef = useRef(null);
@@ -13,8 +13,7 @@ const AnimatedImage = () => {
   const [showDiv, setShowDiv] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [showSecondLine, setShowSecondLine] = useState(false);
-
-  const navigate = useNavigate(); 
+  const [showHome, setShowHome] = useState(false); // State to track when to show Home
 
   useEffect(() => {
     document.documentElement.style.overflow = "hidden";
@@ -45,7 +44,7 @@ const AnimatedImage = () => {
       );
 
       gsap.to(imgRef.current, {
-        x: -(Math.min(400, screenWidth / 2 - 100)) + "px",
+        x: -Math.min(400, screenWidth / 2 - 100) + "px",
         duration: 1.5,
         delay: 1.5,
         ease: "power2.out",
@@ -67,7 +66,7 @@ const AnimatedImage = () => {
         if (index < 13) {
           span.style.color = "#138660";
         } else {
-          span.style.color = "#002132"; 
+          span.style.color = "#002132";
         }
 
         return span;
@@ -98,7 +97,7 @@ const AnimatedImage = () => {
       const characters2 = text2.split("").map((char) => {
         const span = document.createElement("span");
         span.textContent = char;
-        span.style.color = "#002132"; 
+        span.style.color = "#002132";
         return span;
       });
 
@@ -114,11 +113,15 @@ const AnimatedImage = () => {
           duration: 0.6,
           stagger: 0.1,
           ease: "power2.out",
-          onComplete: () => navigate("/home"), 
+          onComplete: () => setTimeout(() => setShowHome(true), 500), // After animation, show Home
         }
       );
     }
   }, [showSecondLine]);
+
+  if (showHome) {
+    return <Home />; // Render Home page after animation completes
+  }
 
   return (
     <div className="flex justify-center items-center h-screen w-screen overflow-hidden relative">
