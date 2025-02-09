@@ -13,7 +13,7 @@ const AnimatedImage = () => {
   const [showDiv, setShowDiv] = useState(false);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [showSecondLine, setShowSecondLine] = useState(false);
-  const [showHome, setShowHome] = useState(false); // State to track when to show Home
+  const [showHome, setShowHome] = useState(false);
 
   useEffect(() => {
     document.documentElement.style.overflow = "hidden";
@@ -29,7 +29,12 @@ const AnimatedImage = () => {
   useEffect(() => {
     if (!logoAnimatedRef.current) {
       logoAnimatedRef.current = true;
-      const logoSize = screenWidth < 600 ? "80px" : "200px";
+
+      let logoSize = "200px"; // Default size
+      if (screenWidth <= 400) logoSize = "50px"; // For very small screens
+      else if (screenWidth < 600) logoSize = "80px";
+      else if (screenWidth < 1024) logoSize = "150px";
+      else if (screenWidth <= 1366) logoSize = "180px";
 
       gsap.fromTo(
         imgRef.current,
@@ -44,14 +49,14 @@ const AnimatedImage = () => {
       );
 
       gsap.to(imgRef.current, {
-        x: -Math.min(400, screenWidth / 2 - 100) + "px",
+        x: -Math.min(200, screenWidth / 3) + "px",
         duration: 1.5,
         delay: 1.5,
         ease: "power2.out",
         onComplete: () => setShowDiv(true),
       });
     }
-  }, []);
+  }, [screenWidth]);
 
   useEffect(() => {
     if (showDiv && textRef1.current && !textAnimatedRef.current) {
@@ -62,13 +67,7 @@ const AnimatedImage = () => {
       const characters = text1.split("").map((char, index) => {
         const span = document.createElement("span");
         span.textContent = char;
-
-        if (index < 13) {
-          span.style.color = "#138660";
-        } else {
-          span.style.color = "#002132";
-        }
-
+        span.style.color = index < 13 ? "#138660" : "#002132";
         return span;
       });
 
@@ -113,14 +112,14 @@ const AnimatedImage = () => {
           duration: 0.6,
           stagger: 0.1,
           ease: "power2.out",
-          onComplete: () => setTimeout(() => setShowHome(true), 500), // After animation, show Home
+          onComplete: () => setTimeout(() => setShowHome(true), 500),
         }
       );
     }
   }, [showSecondLine]);
 
   if (showHome) {
-    return <Home />; // Render Home page after animation completes
+    return <Home />;
   }
 
   return (
@@ -135,37 +134,36 @@ const AnimatedImage = () => {
           left: "50%",
           top: "50%",
           transform: "translate(-50%, -50%)",
-          maxWidth: "100vw",
-          maxHeight: "100vh",
+          maxWidth: "90%", // Ensures image doesn't exceed screen
+          maxHeight: "90%",
+          objectFit: "contain",
         }}
       />
 
       {showDiv && (
         <div
-          className="absolute"
+          className="absolute text-center"
           style={{
-            position: "absolute",
-            left: "60%",
+            left: screenWidth > 1024 ? "65%" : screenWidth < 400 ? "50%" : "55%",
             top: "50%",
             transform: "translate(-50%, -50%)",
-            background: "rgba(0, 0, 0, 0)",
-            height: "200px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 20px",
-            maxWidth: "90vw",
+            padding: "0 10px",
+            maxWidth: "95vw",
           }}
         >
           <p
             ref={textRef1}
             style={{
-              fontSize: screenWidth < 600 ? "15px" : "60px",
-              marginLeft: screenWidth < 600 ? "50px" : "0",
+              fontSize:
+                screenWidth < 400
+                  ? "12px"
+                  : screenWidth < 600
+                  ? "15px"
+                  : screenWidth <= 1024
+                  ? "25px"
+                  : "40px",
+              // fontWeight: "bold",
               whiteSpace: "nowrap",
-              textAlign: screenWidth < 600 ? "left" : "center",
-              overflow: "hidden",
             }}
           >
             GeeksforGeeks Student Chapter
@@ -175,10 +173,16 @@ const AnimatedImage = () => {
             <p
               ref={textRef2}
               style={{
-                fontSize: screenWidth < 600 ? "15px" : "60px",
-                margin: 0,
+                fontSize:
+                  screenWidth < 400
+                    ? "12px"
+                    : screenWidth < 600
+                    ? "15px"
+                    : screenWidth <= 1024
+                    ? "25px"
+                    : "40px",
+                // fontWeight: "bold",
                 whiteSpace: "nowrap",
-                overflow: "hidden",
               }}
             >
               SRMIST Ramapuram
